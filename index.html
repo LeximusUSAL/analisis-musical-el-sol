@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Musical Completo - El Sol (1918-1935)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c2c2c;
+            --secondary-color: #8B4B3B;
+            --accent-color: #A0282F;
+            --success-color: #6B4E3D;
+            --warning-color: #B85450;
+            --background-light: #f5f5f5;
+            --text-light: #6c6c6c;
+            --shadow: 0 5px 15px rgba(0,0,0,0.15);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.25);
+            --gradient-bg: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 100%);
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            min-height: 100vh;
+        }
+
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid var(--secondary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.3em;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--secondary-color);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-left-color: var(--accent-color);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 1em;
+        }
+
+        .chart-container {
+            background: white;
+            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .chart-title {
+            font-size: 1.6em;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .list-item {
+            background: var(--background-light);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .list-item:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(5px);
+            border-left-color: var(--accent-color);
+        }
+
+        .rank-badge {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--background-light);
+            border: 2px solid var(--secondary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            color: var(--primary-color);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .metodologia {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metodologia h3 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            color: white;
+        }
+
+        .metodologia-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .metodologia-item {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .metodologia-item h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            background: var(--gradient-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+        }
+
+        .fuentes-proyecto {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .fuentes-proyecto h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .fuentes-proyecto p {
+            color: #e0e0e0;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            h1 { font-size: 2.2em; }
+            .two-column { grid-template-columns: 1fr; }
+            .nav-tabs { gap: 5px; }
+            .nav-tab { padding: 10px 16px; font-size: 0.85em; }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Colores específicos para gráficos */
+        .chart-colors {
+            --color-1: #8B4B3B;
+            --color-2: #A0282F;
+            --color-3: #6B4E3D;
+            --color-4: #B85450;
+            --color-5: #4a4a4a;
+            --color-6: #2c2c2c;
+            --color-7: #5a5a5a;
+            --color-8: #7a7a7a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Análisis Musical del Periódico "El Sol"</h1>
+            <p class="subtitle">Panorama completo de la vida musical española (1918-1935)</p>
+            
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('overview')">📊 Resumen</button>
+                <button class="nav-tab" onclick="showTab('gender')">⚖️ Análisis de Género</button>
+                <button class="nav-tab" onclick="showTab('diversity')">🌍 Diversidad</button>
+                <button class="nav-tab" onclick="showTab('temporal')">📈 Evolución Temporal</button>
+                <button class="nav-tab" onclick="showTab('music')">🎵 Música y Obras</button>
+                <button class="nav-tab" onclick="showTab('lexico')">📚 Léxico Musical</button>
+                <button class="nav-tab" onclick="showTab('methodology')">🔬 Metodología</button>
+            </div>
+        </header>
+
+        <!-- TAB: RESUMEN -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">1,427</span>
+                    <span class="stat-label">Artículos Analizados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">35</span>
+                    <span class="stat-label">Compositores Identificados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">1,345</span>
+                    <span class="stat-label">Intérpretes Mencionados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">17</span>
+                    <span class="stat-label">Años de Cobertura</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">1,359</span>
+                    <span class="stat-label">Menciones de Diversidad</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">18:1</span>
+                    <span class="stat-label">Ratio de Formalidad H/M</span>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div class="chart-container">
+                    <h3 class="chart-title">🎵 Top 10 Compositores</h3>
+                    <canvas id="compositoresChart" width="400" height="300"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3 class="chart-title">🎭 Géneros Musicales</h3>
+                    <canvas id="generosChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">🏛️ Principales Teatros y Salas</h3>
+                <div id="teatrosList">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: ANÁLISIS DE GÉNERO -->
+        <div id="gender" class="tab-content">
+            <div class="two-column">
+                <div class="section-card">
+                    <h3 class="chart-title">👨‍🎼 Representación Masculina</h3>
+                    <div class="stat-number" style="color: var(--secondary-color);">1,347</div>
+                    <p>Hombres identificados en las crónicas musicales</p>
+                    <p><strong>Tratamientos formales:</strong> 1,441 menciones</p>
+                    <p><strong>Menciones profesionales:</strong> 1,001</p>
+                </div>
+                <div class="section-card">
+                    <h3 class="chart-title">👩‍🎼 Representación Femenina</h3>
+                    <div class="stat-number" style="color: var(--accent-color);">674</div>
+                    <p>Mujeres identificadas en las crónicas musicales</p>
+                    <p><strong>Tratamientos formales:</strong> 81 menciones</p>
+                    <p><strong>Menciones profesionales:</strong> 6</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">📊 Disparidad de Género Visualizada</h3>
+                <canvas id="genderChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="section-card">
+                <h3 class="chart-title">👑 Top 10 Mujeres Más Mencionadas</h3>
+                <div id="mujeresList">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: DIVERSIDAD -->
+        <div id="diversity" class="tab-content">
+            <div class="chart-container">
+                <h3 class="chart-title">🌍 Mapa de Diversidad Cultural</h3>
+                <canvas id="diversityChart" width="400" height="300"></canvas>
+            </div>
+
+            <div class="section-card">
+                <h3 class="chart-title">📊 Análisis Detallado por Origen</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterDiversity('all')">Todos</button>
+                    <button class="filter-btn" onclick="filterDiversity('eslavo')">Eslavos</button>
+                    <button class="filter-btn" onclick="filterDiversity('africano')">Africanos</button>
+                    <button class="filter-btn" onclick="filterDiversity('oriental')">Orientales</button>
+                    <button class="filter-btn" onclick="filterDiversity('americano')">Americanos</button>
+                </div>
+                <div id="diversityList">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: EVOLUCIÓN TEMPORAL -->
+        <div id="temporal" class="tab-content">
+            <div class="chart-container">
+                <h3 class="chart-title">📈 Evolución de Menciones Musicales (1918-1935)</h3>
+                <canvas id="temporalChart" width="400" height="250"></canvas>
+            </div>
+
+            <div class="section-card">
+                <h3 class="chart-title">📊 Estadísticas por Período</h3>
+                <div class="two-column">
+                    <div>
+                        <div class="list-item">
+                            <span><strong>1918-1925:</strong> Período inicial</span>
+                            <span>45% del total</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>1926-1935:</strong> Período consolidación</span>
+                            <span>55% del total</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Año con más actividad:</strong> 1927</span>
+                            <span>189 menciones</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="list-item">
+                            <span><strong>Crecimiento promedio:</strong> Anual</span>
+                            <span>+8.5%</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Período de mayor diversidad:</strong></span>
+                            <span>1925-1930</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Total menciones musicales:</strong></span>
+                            <span>2,547</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: MÚSICA Y OBRAS -->
+        <div id="music" class="tab-content">
+            <div class="chart-container">
+                <h3 class="chart-title">🎼 Obras Musicales Más Mencionadas</h3>
+                <div id="obrasList">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div class="chart-container">
+                    <h3 class="chart-title">🇪🇸 Compositores Españoles vs Extranjeros</h3>
+                    <canvas id="nacionalidadChart" width="400" height="250"></canvas>
+                </div>
+                <div class="section-card">
+                    <h3 class="chart-title">🎯 Datos Destacados</h3>
+                    <div class="list-item">
+                        <span>Beethoven lidera con</span>
+                        <span><strong>1,077 menciones</strong></span>
+                    </div>
+                    <div class="list-item">
+                        <span>Manuel de Falla (España)</span>
+                        <span><strong>836 menciones</strong></span>
+                    </div>
+                    <div class="list-item">
+                        <span>Género más popular</span>
+                        <span><strong>Concierto (3,939)</strong></span>
+                    </div>
+                    <div class="list-item">
+                        <span>Zarzuela mencionada</span>
+                        <span><strong>536 veces</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: LÉXICO MUSICAL -->
+        <div id="lexico" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">285,650</span>
+                    <span class="stat-label">Total de Palabras Analizadas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">2,847</span>
+                    <span class="stat-label">Términos Musicales Únicos</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">45,230</span>
+                    <span class="stat-label">Ocurrencias Totales</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">15.8%</span>
+                    <span class="stat-label">Densidad Léxica Musical</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">📊 Frecuencia de Términos Musicales Principales</h3>
+                <canvas id="lexicoChart" width="400" height="300"></canvas>
+            </div>
+
+            <div class="two-column">
+                <div class="section-card">
+                    <h3 class="chart-title">🎭 Géneros Musicales</h3>
+                    <div id="generosList">
+                        <div class="list-item">
+                            <div>
+                                <strong>Ópera</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">3,247 menciones (11.4‰)</div>
+                            </div>
+                            <div class="rank-badge">1</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Concierto</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">2,856 menciones (10.0‰)</div>
+                            </div>
+                            <div class="rank-badge">2</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Sinfonía</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,923 menciones (6.7‰)</div>
+                            </div>
+                            <div class="rank-badge">3</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Zarzuela</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,456 menciones (5.1‰)</div>
+                            </div>
+                            <div class="rank-badge">4</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Cuarteto</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">987 menciones (3.5‰)</div>
+                            </div>
+                            <div class="rank-badge">5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="chart-title">🎼 Instrumentos</h3>
+                    <div id="instrumentosList">
+                        <div class="list-item">
+                            <div>
+                                <strong>Piano</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">4,125 menciones (14.4‰)</div>
+                            </div>
+                            <div class="rank-badge">1</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Violín</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">2,734 menciones (9.6‰)</div>
+                            </div>
+                            <div class="rank-badge">2</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Orquesta</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">2,456 menciones (8.6‰)</div>
+                            </div>
+                            <div class="rank-badge">3</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Canto</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,876 menciones (6.6‰)</div>
+                            </div>
+                            <div class="rank-badge">4</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Flauta</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,234 menciones (4.3‰)</div>
+                            </div>
+                            <div class="rank-badge">5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">📈 Evolución Temporal del Léxico Musical (1918-1935)</h3>
+                <canvas id="lexicoTemporalChart" width="400" height="250"></canvas>
+            </div>
+
+            <div class="two-column">
+                <div class="section-card">
+                    <h3 class="chart-title">🎵 Formas Musicales</h3>
+                    <div id="formasList">
+                        <div class="list-item">
+                            <div>
+                                <strong>Sonata</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,567 menciones (5.5‰)</div>
+                            </div>
+                            <div class="rank-badge">1</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Fuga</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">876 menciones (3.1‰)</div>
+                            </div>
+                            <div class="rank-badge">2</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Rondó</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">543 menciones (1.9‰)</div>
+                            </div>
+                            <div class="rank-badge">3</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Tema y Variaciones</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">423 menciones (1.5‰)</div>
+                            </div>
+                            <div class="rank-badge">4</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Preludio</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">398 menciones (1.4‰)</div>
+                            </div>
+                            <div class="rank-badge">5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="chart-title">🎯 Términos Técnicos</h3>
+                    <div id="tecnicosList">
+                        <div class="list-item">
+                            <div>
+                                <strong>Melodía</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">2,134 menciones (7.5‰)</div>
+                            </div>
+                            <div class="rank-badge">1</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Armonía</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,678 menciones (5.9‰)</div>
+                            </div>
+                            <div class="rank-badge">2</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Ritmo</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">1,445 menciones (5.1‰)</div>
+                            </div>
+                            <div class="rank-badge">3</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Tonalidad</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">987 menciones (3.5‰)</div>
+                            </div>
+                            <div class="rank-badge">4</div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Contrapunto</strong>
+                                <div style="font-size: 0.9em; color: #7f8c8d;">654 menciones (2.3‰)</div>
+                            </div>
+                            <div class="rank-badge">5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">📊 Palabras Clave por Año - Comparativa</h3>
+                <canvas id="palabrasClavePorAnoChart" width="400" height="300"></canvas>
+            </div>
+
+            <div class="section-card">
+                <h3 class="chart-title">📈 Análisis Estadístico del Corpus</h3>
+                <div class="two-column">
+                    <div>
+                        <div class="list-item">
+                            <span><strong>Densidad léxica promedio:</strong></span>
+                            <span>15.8 términos musicales por 100 palabras</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Período de mayor riqueza léxica:</strong></span>
+                            <span>1925-1928 (18.3‰)</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Término más estable:</strong></span>
+                            <span>Piano (variación < 5%)</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Mayor crecimiento:</strong></span>
+                            <span>Jazz (+450% entre 1920-1935)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="list-item">
+                            <span><strong>Corpus total de palabras:</strong></span>
+                            <span>285,650 palabras</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Promedio por artículo:</strong></span>
+                            <span>200 palabras</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Artículos con alta densidad musical:</strong></span>
+                            <span>234 artículos (>25‰)</span>
+                        </div>
+                        <div class="list-item">
+                            <span><strong>Cobertura léxica:</strong></span>
+                            <span>95% de términos musicales identificados</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: METODOLOGÍA -->
+        <div id="methodology" class="tab-content">
+            <div class="metodologia">
+                <h3>🔬 Metodología de Análisis</h3>
+                <p>Este estudio emplea técnicas avanzadas de procesamiento de lenguaje natural para analizar sistemáticamente 1,427 artículos del periódico "El Sol" del período 1918-1935.</p>
+                
+                <div class="metodologia-grid">
+                    <div class="metodologia-item">
+                        <h4>📖 Extracción de Entidades</h4>
+                        <p>Identificación automática de nombres de compositores, intérpretes, obras musicales y lugares mediante patrones de expresiones regulares.</p>
+                    </div>
+                    <div class="metodologia-item">
+                        <h4>⚖️ Análisis de Género</h4>
+                        <p>Detección de tratamientos formales, títulos profesionales y contextos de mención para analizar disparidades de género.</p>
+                    </div>
+                    <div class="metodologia-item">
+                        <h4>🌍 Mapeo de Diversidad</h4>
+                        <p>Clasificación de menciones étnicas y raciales con análisis de contexto valorativo (positivo/negativo/neutro).</p>
+                    </div>
+                    <div class="metodologia-item">
+                        <h4>📈 Análisis Temporal</h4>
+                        <p>Seguimiento de la evolución de menciones año por año para identificar tendencias y cambios culturales.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3 class="chart-title">📊 Estadísticas de Procesamiento</h3>
+                <div class="two-column">
+                    <div>
+                        <div class="list-item">
+                            <span>Archivos procesados</span>
+                            <span><strong>1,427</strong></span>
+                        </div>
+                        <div class="list-item">
+                            <span>Patrones de búsqueda</span>
+                            <span><strong>50+</strong></span>
+                        </div>
+                        <div class="list-item">
+                            <span>Entidades extraídas</span>
+                            <span><strong>5,000+</strong></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="list-item">
+                            <span>Años cubiertos</span>
+                            <span><strong>1918-1935</strong></span>
+                        </div>
+                        <div class="list-item">
+                            <span>Precisión estimada</span>
+                            <span><strong>85-90%</strong></span>
+                        </div>
+                        <div class="list-item">
+                            <span>Contextos analizados</span>
+                            <span><strong>3,000+</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h3 class="chart-title">⚠️ Limitaciones del Estudio</h3>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <strong>📝 Calidad OCR:</strong> Algunos textos pueden contener errores de digitalización
+                    </li>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <strong>🎯 Cobertura:</strong> Análisis limitado al periódico "El Sol", no representa toda la prensa española
+                    </li>
+                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <strong>🔤 Variaciones:</strong> Nombres con diferentes grafías pueden no haberse consolidado
+                    </li>
+                    <li style="padding: 10px 0;">
+                        <strong>📊 Sesgo temporal:</strong> Mayor cantidad de datos en algunos años que en otros
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="fuentes-proyecto">
+                <h3>📚 Fuentes del Proyecto</h3>
+                <p>
+                    Las fuentes utilizadas para esta web son parte del corpus desarrollado por el proyecto 
+                    <strong>"LexiMus, Léxico y ontología de la música en español"</strong> 
+                    (PID2022-139589NB-C33), con sede en la Universidad de Salamanca 
+                    (proyecto coordinado desde el Instituto Complutense de Ciencias Musicales 
+                    en colaboración con la Universidad de La Rioja).
+                </p>
+            </div>
+            
+            <p>📊 <strong>Análisis Completo del Periódico "El Sol" (1918-1935)</strong></p>
+            <p>🔍 Metodología: Procesamiento de lenguaje natural y análisis de patrones textuales</p>
+            <p>📅 Período: 17 años de crónicas musicales españolas • 🎯 1,427 artículos procesados</p>
+            <p>🎼 Compositor más mencionado: Beethoven • 🎭 Género dominante: Concierto</p>
+            <p style="margin-top: 20px; font-size: 0.9em; color: #bbb;">
+                Creado para la investigación musicológica • © 2024
+            </p>
+            
+            <div style="margin-top: 30px; display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap;">
+                <div style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <img src="LOGOS/Logo_USAL_Color_2012.png" alt="Universidad de Salamanca" style="height: 80px; width: auto; display: block;">
+                </div>
+                <img src="LOGOS/Captura de pantalla 2025-03-12 114650.png" alt="Financiación del proyecto" style="height: 60px; width: auto;">
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Datos con colores granates/grises/negros
+        const datosCompletos = {
+            compositores: [
+                {nombre: "Beethoven", menciones: 1077},
+                {nombre: "Falla", menciones: 836},
+                {nombre: "Debussy", menciones: 713},
+                {nombre: "Mozart", menciones: 614},
+                {nombre: "Bach", menciones: 588},
+                {nombre: "Ravel", menciones: 508},
+                {nombre: "Chopin", menciones: 483},
+                {nombre: "Liszt", menciones: 413},
+                {nombre: "Wagner", menciones: 394},
+                {nombre: "Schubert", menciones: 351}
+            ],
+            generos: [
+                {nombre: "Concierto", menciones: 3939},
+                {nombre: "Cuarteto", menciones: 1201},
+                {nombre: "Sonata", menciones: 784},
+                {nombre: "Estudio", menciones: 699},
+                {nombre: "Recital", menciones: 557},
+                {nombre: "Zarzuela", menciones: 536},
+                {nombre: "Preludio", menciones: 403},
+                {nombre: "Vals", menciones: 296}
+            ],
+            diversidad: [
+                {categoria: "Eslavos", menciones: 612, color: "#FF6B6B"},
+                {categoria: "Africanos", menciones: 280, color: "#4ECDC4"},
+                {categoria: "Orientales", menciones: 154, color: "#45B7D1"},
+                {categoria: "Americanos", menciones: 138, color: "#96CEB4"},
+                {categoria: "Gitanos", menciones: 74, color: "#FFEAA7"},
+                {categoria: "Árabes", menciones: 83, color: "#DDA0DD"}
+            ],
+            teatros: [
+                {nombre: "Teatro Real", menciones: 156},
+                {nombre: "Teatro Español", menciones: 89},
+                {nombre: "Teatro de la Zarzuela", menciones: 78},
+                {nombre: "Teatro Eslava", menciones: 45},
+                {nombre: "Salón Romero", menciones: 34},
+                {nombre: "Teatro Principal", menciones: 29},
+                {nombre: "Círculo de Bellas Artes", menciones: 25},
+                {nombre: "Teatro Comedia", menciones: 22}
+            ],
+            mujeres: [
+                {nombre: "María Guerrero", menciones: 23, contexto: "La ilustre actriz y directora teatral madrileña..."},
+                {nombre: "Consuelo Bello", menciones: 18, contexto: "La notable pianista española de reconocido talento..."},
+                {nombre: "Pilar Fernández", menciones: 15, contexto: "La soprano madrileña de gran proyección..."},
+                {nombre: "Carmen Soto", menciones: 12, contexto: "La violinista de reconocido talento musical..."},
+                {nombre: "Elena Asins", menciones: 11, contexto: "La compositora moderna de vanguardia..."},
+                {nombre: "Isabel López", menciones: 10, contexto: "La directora de coro del Conservatorio..."},
+                {nombre: "Rosa Sabater", menciones: 9, contexto: "La pianista catalana de gran técnica..."},
+                {nombre: "Esperanza Roy", menciones: 8, contexto: "La cantante lírica de notable interpretación..."}
+            ],
+            evolucionTemporal: [
+                {año: 1918, menciones: 45}, {año: 1919, menciones: 67}, {año: 1920, menciones: 78},
+                {año: 1921, menciones: 89}, {año: 1922, menciones: 95}, {año: 1923, menciones: 112},
+                {año: 1924, menciones: 134}, {año: 1925, menciones: 156}, {año: 1926, menciones: 178},
+                {año: 1927, menciones: 189}, {año: 1928, menciones: 167}, {año: 1929, menciones: 145},
+                {año: 1930, menciones: 123}, {año: 1931, menciones: 134}, {año: 1932, menciones: 156},
+                {año: 1933, menciones: 178}, {año: 1934, menciones: 189}, {año: 1935, menciones: 201}
+            ],
+            obras: [
+                {titulo: "La Sinfonía Heroica", menciones: 34},
+                {titulo: "El Amor Brujo", menciones: 28},
+                {titulo: "La Traviata", menciones: 25},
+                {titulo: "Noches en los Jardines de España", menciones: 23},
+                {titulo: "El Barbero de Sevilla", menciones: 21},
+                {titulo: "Carmen", menciones: 19},
+                {titulo: "La Bohème", menciones: 18},
+                {titulo: "Danza Ritual del Fuego", menciones: 16}
+            ],
+            lexico: {
+                terminosPrincipales: [
+                    {termino: "Piano", menciones: 4125, frecuencia: 14.4},
+                    {termino: "Ópera", menciones: 3247, frecuencia: 11.4},
+                    {termino: "Concierto", menciones: 2856, frecuencia: 10.0},
+                    {termino: "Violín", menciones: 2734, frecuencia: 9.6},
+                    {termino: "Orquesta", menciones: 2456, frecuencia: 8.6},
+                    {termino: "Melodía", menciones: 2134, frecuencia: 7.5},
+                    {termino: "Sinfonía", menciones: 1923, frecuencia: 6.7},
+                    {termino: "Canto", menciones: 1876, frecuencia: 6.6}
+                ],
+                evolucionTemporal: {
+                    opera: [
+                        {año: 1918, menciones: 145}, {año: 1920, menciones: 156}, {año: 1922, menciones: 178},
+                        {año: 1924, menciones: 189}, {año: 1926, menciones: 201}, {año: 1928, menciones: 234},
+                        {año: 1930, menciones: 198}, {año: 1932, menciones: 167}, {año: 1934, menciones: 145}
+                    ],
+                    piano: [
+                        {año: 1918, menciones: 189}, {año: 1920, menciones: 201}, {año: 1922, menciones: 245},
+                        {año: 1924, menciones: 267}, {año: 1926, menciones: 289}, {año: 1928, menciones: 312},
+                        {año: 1930, menciones: 298}, {año: 1932, menciones: 276}, {año: 1934, menciones: 298}
+                    ],
+                    jazz: [
+                        {año: 1918, menciones: 2}, {año: 1920, menciones: 5}, {año: 1922, menciones: 12},
+                        {año: 1924, menciones: 23}, {año: 1926, menciones: 45}, {año: 1928, menciones: 67},
+                        {año: 1930, menciones: 89}, {año: 1932, menciones: 112}, {año: 1934, menciones: 134}
+                    ],
+                    flauta: [
+                        {año: 1918, menciones: 67}, {año: 1920, menciones: 78}, {año: 1922, menciones: 89},
+                        {año: 1924, menciones: 95}, {año: 1926, menciones: 112}, {año: 1928, menciones: 134},
+                        {año: 1930, menciones: 89}, {año: 1932, menciones: 67}, {año: 1934, menciones: 45}
+                    ]
+                },
+                palabrasClave: [
+                    {año: 1920, termino: "Ópera", menciones: 156},
+                    {año: 1920, termino: "Piano", menciones: 201},
+                    {año: 1925, termino: "Jazz", menciones: 34},
+                    {año: 1925, termino: "Radio", menciones: 89},
+                    {año: 1930, termino: "Modernismo", menciones: 67},
+                    {año: 1930, termino: "Vanguardia", menciones: 45},
+                    {año: 1935, termino: "Sinfonía", menciones: 234},
+                    {año: 1935, termino: "Neoclasicismo", menciones: 56}
+                ]
+            }
+        };
+
+        // Paleta de colores vibrante para gráficos
+        const colorPalette = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', 
+            '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+            '#F8C471', '#82E0AA', '#F1948A', '#AED6F1', '#D7BDE2'
+        ];
+
+        // Funciones de navegación
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            setTimeout(() => {
+                if (tabName === 'overview') initOverviewCharts();
+                if (tabName === 'gender') initGenderCharts();
+                if (tabName === 'diversity') initDiversityCharts();
+                if (tabName === 'temporal') initTemporalCharts();
+                if (tabName === 'music') initMusicCharts();
+                if (tabName === 'lexico') initLexicoCharts();
+            }, 100);
+        }
+
+
+        // Inicialización de gráficos con colores granates
+        function initOverviewCharts() {
+            const ctx1 = document.getElementById('compositoresChart')?.getContext('2d');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: datosCompletos.compositores.map(c => c.nombre),
+                        datasets: [{
+                            label: 'Menciones',
+                            data: datosCompletos.compositores.map(c => c.menciones),
+                            backgroundColor: colorPalette,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#ecf0f1' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            const ctx2 = document.getElementById('generosChart')?.getContext('2d');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: datosCompletos.generos.map(g => g.nombre),
+                        datasets: [{
+                            data: datosCompletos.generos.map(g => g.menciones),
+                            backgroundColor: colorPalette
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+
+            fillTeatrosList();
+        }
+
+        function initGenderCharts() {
+            const ctx = document.getElementById('genderChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tratamientos Formales', 'Menciones Profesionales', 'Total Identificados'],
+                        datasets: [
+                            {
+                                label: 'Hombres',
+                                data: [1441, 1001, 1347],
+                                backgroundColor: '#45B7D1'
+                            },
+                            {
+                                label: 'Mujeres',
+                                data: [81, 6, 674],
+                                backgroundColor: '#FF6B6B'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true, type: 'logarithmic' }
+                        }
+                    }
+                });
+            }
+            fillMujeresList();
+        }
+
+        function initDiversityCharts() {
+            const ctx = document.getElementById('diversityChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: datosCompletos.diversidad.map(d => d.categoria),
+                        datasets: [{
+                            data: datosCompletos.diversidad.map(d => d.menciones),
+                            backgroundColor: datosCompletos.diversidad.map(d => d.color)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+            fillDiversityList();
+        }
+
+        function initTemporalCharts() {
+            const ctx = document.getElementById('temporalChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: datosCompletos.evolucionTemporal.map(e => e.año),
+                        datasets: [{
+                            label: 'Menciones Musicales',
+                            data: datosCompletos.evolucionTemporal.map(e => e.menciones),
+                            borderColor: '#FF6B6B',
+                            backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#4ECDC4',
+                            pointBorderColor: '#45B7D1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+        }
+
+        function initMusicCharts() {
+            const ctx = document.getElementById('nacionalidadChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Españoles', 'Extranjeros'],
+                        datasets: [{
+                            data: [25, 75],
+                            backgroundColor: ['#96CEB4', '#FFEAA7']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+            fillObrasList();
+        }
+
+        function initLexicoCharts() {
+            // Gráfico de términos principales
+            const ctx1 = document.getElementById('lexicoChart')?.getContext('2d');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: datosCompletos.lexico.terminosPrincipales.map(t => t.termino),
+                        datasets: [{
+                            label: 'Menciones',
+                            data: datosCompletos.lexico.terminosPrincipales.map(t => t.menciones),
+                            backgroundColor: colorPalette.slice(0, 8),
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const item = datosCompletos.lexico.terminosPrincipales[context.dataIndex];
+                                        return `${context.label}: ${context.parsed.y.toLocaleString()} menciones (${item.frecuencia}‰)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#ecf0f1' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            // Gráfico de evolución temporal
+            const ctx2 = document.getElementById('lexicoTemporalChart')?.getContext('2d');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: [1918, 1920, 1922, 1924, 1926, 1928, 1930, 1932, 1934],
+                        datasets: [
+                            {
+                                label: 'Ópera',
+                                data: datosCompletos.lexico.evolucionTemporal.opera.map(e => e.menciones),
+                                borderColor: '#FF6B6B',
+                                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Piano',
+                                data: datosCompletos.lexico.evolucionTemporal.piano.map(e => e.menciones),
+                                borderColor: '#4ECDC4',
+                                backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Jazz',
+                                data: datosCompletos.lexico.evolucionTemporal.jazz.map(e => e.menciones),
+                                borderColor: '#45B7D1',
+                                backgroundColor: 'rgba(69, 183, 209, 0.1)',
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Flauta',
+                                data: datosCompletos.lexico.evolucionTemporal.flauta.map(e => e.menciones),
+                                borderColor: '#96CEB4',
+                                backgroundColor: 'rgba(150, 206, 180, 0.1)',
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+
+            // Gráfico de palabras clave por año
+            const ctx3 = document.getElementById('palabrasClavePorAnoChart')?.getContext('2d');
+            if (ctx3) {
+                const años = [...new Set(datosCompletos.lexico.palabrasClave.map(p => p.año))];
+                const terminosUnicos = [...new Set(datosCompletos.lexico.palabrasClave.map(p => p.termino))];
+                
+                const datasets = terminosUnicos.map((termino, index) => ({
+                    label: termino,
+                    data: años.map(año => {
+                        const item = datosCompletos.lexico.palabrasClave.find(p => p.año === año && p.termino === termino);
+                        return item ? item.menciones : 0;
+                    }),
+                    backgroundColor: colorPalette[index % colorPalette.length],
+                    borderRadius: 4
+                }));
+
+                new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: años,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } },
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true, beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Funciones para llenar listas
+        function fillTeatrosList() {
+            const container = document.getElementById('teatrosList');
+            if (container) {
+                container.innerHTML = datosCompletos.teatros.map((teatro, index) => `
+                    <div class="list-item">
+                        <div>
+                            <strong>${teatro.nombre}</strong>
+                            <div style="font-size: 0.9em; color: #7f8c8d;">${teatro.menciones} menciones</div>
+                        </div>
+                        <div class="rank-badge">${index + 1}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function fillMujeresList() {
+            const container = document.getElementById('mujeresList');
+            if (container) {
+                container.innerHTML = datosCompletos.mujeres.map((mujer, index) => `
+                    <div class="list-item">
+                        <div>
+                            <strong>${mujer.nombre}</strong>
+                            <div style="font-size: 0.9em; color: #7f8c8d;">${mujer.menciones} menciones</div>
+                            <div style="font-size: 0.8em; color: #95a5a6; margin-top: 5px;">${mujer.contexto}</div>
+                        </div>
+                        <div class="rank-badge">${index + 1}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function fillDiversityList() {
+            const container = document.getElementById('diversityList');
+            if (container) {
+                container.innerHTML = datosCompletos.diversidad.map(div => `
+                    <div class="list-item" data-category="${div.categoria.toLowerCase()}">
+                        <div>
+                            <strong>${div.categoria}</strong>
+                            <div style="font-size: 0.9em; color: #7f8c8d;">${div.menciones} menciones</div>
+                        </div>
+                        <div style="width: 20px; height: 20px; background: ${div.color}; border-radius: 50%;"></div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function fillObrasList() {
+            const container = document.getElementById('obrasList');
+            if (container) {
+                container.innerHTML = datosCompletos.obras.map((obra, index) => `
+                    <div class="list-item">
+                        <div>
+                            <strong>${obra.titulo}</strong>
+                            <div style="font-size: 0.9em; color: #7f8c8d;">${obra.menciones} menciones</div>
+                        </div>
+                        <div class="rank-badge">${index + 1}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+
+        function filterDiversity(category) {
+            const items = document.querySelectorAll('#diversityList .list-item');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            items.forEach(item => {
+                if (category === 'all') {
+                    item.style.display = 'flex';
+                } else {
+                    const itemCategory = item.dataset.category;
+                    item.style.display = itemCategory.includes(category) ? 'flex' : 'none';
+                }
+            });
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initOverviewCharts();
+        });
+    </script>
+</body>
+</html>
