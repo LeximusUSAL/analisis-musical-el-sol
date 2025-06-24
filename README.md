@@ -4,7 +4,7 @@ Una herramienta interactiva de análisis digital para explorar las noticias musi
 
 ## 🌐 Ver la Web
 
-**[👉 Acceder al Análisis Musical](https://mariapalaciosnieto.github.io/analisis-musical-el-sol)**
+**[👉 Acceder al Análisis Musical](https://leximususal.github.io/analisis-musical-el-sol)**
 
 ## 📖 Descripción del Proyecto
 
@@ -117,7 +117,7 @@ Esta herramienta digital permite:
 Para consultas académicas o colaboraciones:
 - **Institución**: Universidad de Salamanca
 - **Proyecto**: LexiMus https://leximus.es/
-- **Repositorio**: [GitHub](https://github.com/MariaPalaciosNieto/analisis-musical-el-sol)
+- **Repositorio**: [GitHub](https://github.com/leximususal/principal)
 
 ## 📜 Licencia y Citación
 
@@ -125,7 +125,7 @@ Si utilizas este trabajo en tu investigación, por favor cita:
 ```
 Análisis Musical del Periódico "El Sol" (1918-1935). 
 Proyecto LexiMus, Universidad de Salamanca. 
-Disponible en: https://mariapalaciosnieto.github.io/analisis-musical-el-sol
+Disponible en: https://leximususal.github.io/analisis-musical-el-sol
 ```
 
 ---
